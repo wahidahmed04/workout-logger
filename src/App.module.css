@@ -1,0 +1,13 @@
+.title{
+    font-size: 60px;
+    text-align: center;
+    padding-top: 10px;
+    margin-bottom: 50px;
+}
+.everything_container{
+    background-color: rgb(65, 255, 65);
+  min-height: 100vh;
+  width: 100%;
+
+
+}
