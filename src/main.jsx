@@ -10,7 +10,7 @@ import { supabase } from './supabaseClient';
 
 function Root() {
   const [session, setSession] = useState(null);
-
+  const [userSigningIn, setUserSigningIn] = useState(true)
   useEffect(() => {
     async function getSession() {
       const { data: { session }, error } = await supabase.auth.getSession();
@@ -27,10 +27,10 @@ function Root() {
   }, []);
 
   const router = createHashRouter([
-    { path: "/", element: <App session={session} setSession={setSession} /> },
+    { path: "/", element: <App session={session} setSession={setSession} userSigningIn={userSigningIn} setUserSigningIn={setUserSigningIn}/> },
     { path: "/logger", element: <WorkoutLogger session={session} /> },
     { path: "/history", element: <WorkoutHistory session={session} /> },
-    { path: "/home", element: <Home session={session} /> },
+    { path: "/home", element: <Home session={session} userSigningIn={userSigningIn} setUserSigningIn={setUserSigningIn}/> },
   ]);
 
   return <RouterProvider router={router} />;

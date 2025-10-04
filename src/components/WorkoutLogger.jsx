@@ -4,6 +4,8 @@ export default function WorkoutLogger({session}) {
     <>
     <h1>Workout Logger</h1>
     <Link to="/">Go back</Link>
+    <button>Workouts</button>
+    <button>Log a workout</button>
     </>
   )
 }

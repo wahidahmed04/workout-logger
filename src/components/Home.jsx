@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
 import {useState, useEffect} from 'react'
-export default function Home({session}) {
+export default function Home({session, userSigningIn, setUserSigningIn}) {
   const [username, setUsername] = useState('')
   const [accountAge, setAccountAge] = useState(null)
   useEffect(() => {
@@ -28,12 +28,25 @@ export default function Home({session}) {
 
   fetchProfile()
 }, [session])
+  async function signOut() {
+    const { error } = await supabase.auth.signOut()
+    if (error) console.error(error.message)
+    else setUserSigningIn(true)
+  }
+  
+  const navigate = useNavigate()
 
+  useEffect(() => {
+    if (userSigningIn) {
+      navigate('/') // automatically go to home when user is signed in
+    }
+  }, [userSigningIn, navigate])
   return (
     <>
+    
     <h1>Homepage</h1>
-    <Link to="/">Go back</Link>
     <h1>Username: {username}</h1>
+    <button onClick={signOut}>Log out</button>
     <h1>Account age: {accountAge} {accountAge === 1 ? "day" : "days"}</h1>
     <h1>Favorite exercises: </h1>
     <h1>Total number of workouts:</h1>

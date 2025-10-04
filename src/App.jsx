@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react'
-import { Outlet } from 'react-router-dom'
 import SignIn from './components/SignIn'
 import { supabase } from './supabaseClient'
 import styles from './App.module.css'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate} from 'react-router-dom'
 
-function App({session, setSession}) {
-  const [userSigningIn, setUserSigningIn] = useState(true)
+function App({session, setSession, userSigningIn, setUserSigningIn}) {
 
   useEffect(() => {
     async function getSession() {
@@ -25,29 +23,18 @@ function App({session, setSession}) {
     return () => listener.subscription.unsubscribe()
   }, [])
 
-  async function signOut() {
-    const { error } = await supabase.auth.signOut()
-    if (error) console.error(error.message)
-    else setUserSigningIn(true)
-  }
 
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!userSigningIn) {
+      navigate('/home') // automatically go to home when user is signed in
+    }
+  }, [userSigningIn, navigate])
   return (
     <div className={styles.everything_container}>
       <h1 className={styles.title}>Workout Logger</h1>
-
-      {userSigningIn ? (
-        <SignIn session={session} setSession={setSession} setUserSigningIn={setUserSigningIn} />
-      ) : (
-        <>
-          <button onClick={signOut}>Log out</button>
-          <br/>
-          <Link to="/home">Go to home</Link>
-          <br/>
-          <Link to="/logger">Log a workout</Link>
-          <br/>
-          <Link to="/history">View your workout history</Link>
-        </>
-      )}
+      <SignIn session={session} setSession={setSession} setUserSigningIn={setUserSigningIn} />
     </div>
   )
 }
