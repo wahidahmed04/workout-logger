@@ -1,21 +1,43 @@
-import { StrictMode } from 'react';
+import { StrictMode, useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
-import {createHashRouter, RouterProvider} from 'react-router-dom';
+import { createHashRouter, RouterProvider } from 'react-router-dom';
 import './index.css';
 import App from './App.jsx';
 import WorkoutHistory from './components/WorkoutHistory.jsx';
 import WorkoutLogger from './components/WorkoutLogger.jsx';
 import Home from './components/Home.jsx';
+import { supabase } from './supabaseClient';
 
-const router = createHashRouter([
-  {path: "/", element: <App />},
-  {path: "/logger", element: <WorkoutLogger/>},
-  {path :"/history", element: <WorkoutHistory/>},
-  {path: "/home", element: <Home/>},
-])
+function Root() {
+  const [session, setSession] = useState(null);
+
+  useEffect(() => {
+    async function getSession() {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (error) console.error(error);
+      setSession(session);
+    }
+    getSession();
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => listener.subscription.unsubscribe();
+  }, []);
+
+  const router = createHashRouter([
+    { path: "/", element: <App session={session} setSession={setSession} /> },
+    { path: "/logger", element: <WorkoutLogger session={session} /> },
+    { path: "/history", element: <WorkoutHistory session={session} /> },
+    { path: "/home", element: <Home session={session} /> },
+  ]);
+
+  return <RouterProvider router={router} />;
+}
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-   <RouterProvider router={router} />
+    <Root />
   </StrictMode>
 );

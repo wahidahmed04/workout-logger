@@ -5,8 +5,7 @@ import { supabase } from './supabaseClient'
 import styles from './App.module.css'
 import { Link } from 'react-router-dom'
 
-function App() {
-  const [session, setSession] = useState(null)
+function App({session, setSession}) {
   const [userSigningIn, setUserSigningIn] = useState(true)
 
   useEffect(() => {

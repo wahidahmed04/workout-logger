@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-export default function WorkoutHistory() {
+export default function WorkoutHistory({session}) {
   return (
     <>
     <h1>Workout History</h1>

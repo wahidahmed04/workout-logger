@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-export default function WorkoutLogger() {
+export default function WorkoutLogger({session}) {
   return (
     <>
     <h1>Workout Logger</h1>
