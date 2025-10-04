@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react'
+import { Outlet } from 'react-router-dom'
 import SignIn from './components/SignIn'
 import { supabase } from './supabaseClient'
-import Username from './components/Username'
 import styles from './App.module.css'
+import { Link } from 'react-router-dom'
 
 function App() {
   const [session, setSession] = useState(null)
   const [userSigningIn, setUserSigningIn] = useState(true)
-  
-  // fetch session on load
+
   useEffect(() => {
     async function getSession() {
       const { data: { session }, error } = await supabase.auth.getSession()
@@ -18,7 +18,6 @@ function App() {
     }
     getSession()
 
-    // listen for auth state changes
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
       setUserSigningIn(!session)
@@ -36,13 +35,13 @@ function App() {
   return (
     <div className={styles.everything_container}>
       <h1 className={styles.title}>Workout Logger</h1>
+
       {userSigningIn ? (
         <SignIn session={session} setSession={setSession} setUserSigningIn={setUserSigningIn} />
       ) : (
         <>
-          <h1>Welcome!</h1>
-          <Username session={session} />
           <button onClick={signOut}>Log out</button>
+          <Link to="/home">Go to home</Link>
         </>
       )}
     </div>

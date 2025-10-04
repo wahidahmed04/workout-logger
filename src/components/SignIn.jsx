@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { supabase } from '../supabaseClient'
-import styles from './SignIn.module.css'
+import styles from '/src/styling/SignIn.module.css'
 import googleLogo from '/src/assets/google-logo.png'
 export default function SignIn({ session, setSession, setUserSigningIn }) {
   const [signingIn, setSigningIn] = useState(true)
@@ -18,7 +18,9 @@ export default function SignIn({ session, setSession, setUserSigningIn }) {
   }
 
   async function googleSignIn() {
-    const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' })
+    const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: {
+    redirectTo: 'https://wahidahmed04.github.io/workout-logger/' 
+  } })
     if (error) console.error(error.message)
   }
 
