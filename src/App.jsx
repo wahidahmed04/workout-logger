@@ -41,7 +41,12 @@ function App() {
       ) : (
         <>
           <button onClick={signOut}>Log out</button>
+          <br/>
           <Link to="/home">Go to home</Link>
+          <br/>
+          <Link to="/logger">Log a workout</Link>
+          <br/>
+          <Link to="/history">View your workout history</Link>
         </>
       )}
     </div>
