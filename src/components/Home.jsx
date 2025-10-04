@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
 import {useState, useEffect} from 'react'
+import Navbar from './Navbar'
 export default function Home({session, userSigningIn, setUserSigningIn}) {
   const [username, setUsername] = useState('')
   const [accountAge, setAccountAge] = useState(null)
@@ -50,10 +51,7 @@ export default function Home({session, userSigningIn, setUserSigningIn}) {
     <h1>Account age: {accountAge} {accountAge === 1 ? "day" : "days"}</h1>
     <h1>Favorite exercises: </h1>
     <h1>Total number of workouts:</h1>
-    <br/>
-    <Link to="/logger">Log a workout</Link>
-    <br/>
-    <Link to="/history">View your workout history</Link>
+    <Navbar/>
     </>
   )
 }
