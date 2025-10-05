@@ -20,8 +20,8 @@ export default function SignIn({ session, setSession, setUserSigningIn }) {
   async function googleSignIn() {
     const redirectTo =
   window.location.hostname === "localhost"
-    ? "http://localhost:5173"
-    : "https://wahidahmed04.github.io/workout-logger";
+    ? "http://localhost:5173/"
+    : "https://wahidahmed04.github.io/workout-logger/";
     const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: {
     redirectTo 
   } })

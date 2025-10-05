@@ -3,14 +3,16 @@ import Navbar from "../support-components/Navbar"
 import { useState, useEffect } from 'react'
 import styles from '/src/styling/WorkoutLogger.module.css'
 import { supabase } from '../supabaseClient';
-
+import LogWorkout from "../support-components/LogWorkout";
 export default function WorkoutLogger({ session }) {
+  const [userWorkouts, setUserWorkouts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [exercises, setExercises] = useState([{ name: "", query: "", selected: false }]);
   const [results, setResults] = useState([[]]); // array of arrays for search results
   const [workoutName, setWorkoutName] = useState("");
   const [addError, setAddError] = useState("");
   const [createError, setCreateError] = useState("")
+  const [loggingWorkout, setLoggingWorkout] = useState(false)
   // search effect
   useEffect(() => {
     async function searchExercises() {
@@ -147,11 +149,40 @@ const preset_id = presetData.id
   }
 }
 }
+function handleCancel(){
+  setShowModal(false);
+  setExercises([{ name: "", query: "", selected: false }]);
+  setResults([[]]); // array of arrays for search results
+  setWorkoutName("");
+  setAddError("");
+  setCreateError("")
+}
+async function fetchUserWorkouts() {
+  const { data, error } = await supabase
+    .from('workout_presets')
+    .select('*')
+    .eq('user_id', session.user.id)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching workouts:', error);
+  } else {
+    setUserWorkouts(data);
+  }
+}
   return (
+    loggingWorkout ? (
+      <LogWorkout session={session} loggingWorkout={loggingWorkout} setLoggingWorkout={setLoggingWorkout}
+      userWorkouts={userWorkouts} setUserWorkouts={setUserWorkouts}
+      />
+    ) : (
     <>
       <h1>Workout Logger</h1>
       <button>Workouts</button>
-      <button>Log a workout</button>
+      <button onClick={() => { 
+  fetchUserWorkouts();
+  setLoggingWorkout(true);
+}}>Log a workout</button>
       <button onClick={() => setShowModal(true)}>Create a new workout</button>
 
       {showModal && (
@@ -203,11 +234,12 @@ const preset_id = presetData.id
             <br /><br />
             <button type="button" onClick={() => {handleCreateWorkout()}}>Create Workout</button>
             {createError && <p style={{ color: 'red' }}>{createError}</p>}
+            <button onClick={handleCancel}>Cancel</button>
           </div>
         </div>
       )}
-
       <Navbar />
     </>
+    )
   );
 }
