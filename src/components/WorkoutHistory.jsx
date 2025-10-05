@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import Navbar from './Navbar'
+import Navbar from '../support-components/Navbar'
 export default function WorkoutHistory({session}) {
   return (
     <>

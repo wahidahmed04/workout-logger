@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import SignIn from './components/SignIn'
+import SignIn from './support-components/SignIn'
 import { supabase } from './supabaseClient'
 import styles from './App.module.css'
 import { Link, useNavigate} from 'react-router-dom'

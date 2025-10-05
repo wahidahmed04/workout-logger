@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
 import {useState, useEffect} from 'react'
-import Navbar from './Navbar'
+import Navbar from '../support-components/Navbar'
 export default function Home({session, userSigningIn, setUserSigningIn}) {
   const [username, setUsername] = useState('')
   const [accountAge, setAccountAge] = useState(null)
