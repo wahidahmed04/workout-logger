@@ -67,6 +67,11 @@ export default function WorkoutLogger({ session }) {
   }, [exercises]);
 
   function handleSelectExercise(index, name) {
+    for(let i = 0; i < exercises.length; i++){
+      if(exercises[i].name === name){
+        return
+      }
+    }
     const newExercises = [...exercises];
     newExercises[index].name = name;
     newExercises[index].query = name;
@@ -75,40 +80,47 @@ export default function WorkoutLogger({ session }) {
   }
 
   function handleAddExercise() {
-    const allFilled = exercises.every(ex => ex.name.trim() !== "");
-    if (!allFilled) {
-      setAddError("Please fill in all current exercises before adding a new one.");
-      return;
-    }
-    setAddError("");
-    setExercises([...exercises, { name: "", query: "", selected: false }]);
-    setResults([...results, []]);
+  const hasIncomplete = exercises.some(
+    (ex) => ex.query.trim() !== "" && !ex.selected
+  );
+  if (hasIncomplete) {
+    setAddError("Please finish selecting all exercises before adding a new one.");
+    return;
   }
-  function handleCreateWorkout(){
-    if(!workoutName){
-      setCreateError("Workout name cannot be left empty")
-      return
-    }
-    if(exercises.length === 1){
-      if(JSON.stringify(exercises[0]) === JSON.stringify({ name: "", query: "", selected: false })){
-        setCreateError("At least one exercise must be added")
-        return
-      }
-    }
-    setCreateError("")
-    addWorkout()
+  setAddError("");
+  setExercises([...exercises, { name: "", query: "", selected: false }]);
+  setResults([...results, []]);
+}
+
+  function handleCreateWorkout() {
+  // check for incomplete exercises
+  const hasIncomplete = exercises.some(
+    (ex) => ex.query.trim() !== "" && !ex.selected
+  );
+  if (hasIncomplete) {
+    setCreateError("Please finish selecting all exercises before creating the workout.");
+    return;
   }
-  async function addWorkout(){
-    
-    const { data, error } = await supabase
-      .from('workout_presets')
-      .insert([
-        {
-          user_id: session.user.id,
-          name: workoutName
-        }
-      ])
-    
+
+  // check if at least one exercise is selected
+  const validExercises = exercises.filter((ex) => ex.selected);
+  if (validExercises.length === 0) {
+    setCreateError("At least one exercise must be added.");
+    return;
+  }
+
+  setCreateError("");
+  addWorkout(); // continue with your existing workout creation function
+}
+
+async function addWorkout() {
+  
+  const { data, error } = await supabase
+    .from('workout_presets')
+    .insert([{ user_id: session.user.id, name: workoutName }])
+    .select('id')
+    .single(); // directly get the new workout ID
+
   if (error) {
     if (error.code === '23505') {
       setCreateError('You already have a workout with this name.');
@@ -118,37 +130,30 @@ export default function WorkoutLogger({ session }) {
     console.error('Insert error:', error);
     return;
   }
-    else {
-    await addExercises()
-    setShowModal(false)
-    setWorkoutName("")
-  }
-  }
-async function addExercises(){
-  const { data: presetData, error } = await supabase
-  .from('workout_presets')
-  .select('id')
-  .eq('name', workoutName)
-  .single()
 
-if (error) {
-  console.error('Error fetching preset_id:', error)
-  return
+  const presetId = data.id;
+
+  // ✅ Wait for all inserts to finish
+  await Promise.all(
+    exercises
+      .filter(ex => ex.name.trim() !== "")
+      .map(async (exercise) => {
+        const { error: insertError } = await supabase
+          .from('preset_exercises')
+          .insert([{ preset_id: presetId, name: exercise.name }]);
+        if (insertError) console.error(`Error inserting ${exercise.name}:`, insertError);
+      })
+  );
+
+  // Reset modal state
+  setShowModal(false);
+  setWorkoutName("");
+  setExercises([{ name: "", query: "", selected: false }]);
+  setCreateError("");
+  setAddError("");
 }
-const preset_id = presetData.id
-  for(const exercise of exercises){
-    if(exercise.name){
-    const { data, error } = await supabase
-      .from('preset_exercises')
-      .insert([
-        {
-          preset_id,
-          name: exercise.name
-        }
-      ])
-  }
-}
-}
+
+
 function handleCancel(){
   setShowModal(false);
   setExercises([{ name: "", query: "", selected: false }]);
@@ -169,6 +174,9 @@ async function fetchUserWorkouts() {
   } else {
     setUserWorkouts(data);
   }
+}
+function handleRemove(index){
+  setExercises(exercises.filter((_, i) => i !== index))
 }
   return (
     loggingWorkout ? (
@@ -207,11 +215,13 @@ async function fetchUserWorkouts() {
                   onChange={(e) => {
                     const newExercises = [...exercises];
                     newExercises[index].query = e.target.value;
-                    newExercises[index].selected = false;
+                    newExercises[index].selected = false; // allow new search
                     setExercises(newExercises);
                   }}
                   style={{ width: '300px', padding: '5px' }}
                 />
+                <button onClick={() => handleRemove(index)}>Remove exercise</button>
+
 
                 {!exercise.selected && results[index]?.length > 0 && (
                   <ul className={styles.search_results}>
