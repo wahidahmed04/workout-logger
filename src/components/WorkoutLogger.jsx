@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import styles from '/src/styling/WorkoutLogger.module.css'
 import { supabase } from '../supabaseClient';
 import LogWorkout from "../support-components/LogWorkout";
+import ViewWorkouts from "../support-components/ViewWorkouts";
 export default function WorkoutLogger({ session }) {
   const [userWorkouts, setUserWorkouts] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -13,6 +14,7 @@ export default function WorkoutLogger({ session }) {
   const [addError, setAddError] = useState("");
   const [createError, setCreateError] = useState("")
   const [loggingWorkout, setLoggingWorkout] = useState(false)
+  const [viewingWorkouts, setViewingWorkouts] = useState(false)
   // search effect
   useEffect(() => {
     async function searchExercises() {
@@ -183,10 +185,13 @@ function handleRemove(index){
       <LogWorkout session={session} loggingWorkout={loggingWorkout} setLoggingWorkout={setLoggingWorkout}
       userWorkouts={userWorkouts} setUserWorkouts={setUserWorkouts}
       />
+    ) : viewingWorkouts ? (
+      <ViewWorkouts session={session} viewingWorkouts={viewingWorkouts} setViewingWorkouts={setViewingWorkouts}
+      userWorkouts={userWorkouts} setUserWorkouts={setUserWorkouts}/>
     ) : (
     <>
       <h1>Workout Logger</h1>
-      <button>Workouts</button>
+      <button onClick={() => {fetchUserWorkouts(); setViewingWorkouts(true)}}>Workouts</button>
       <button onClick={() => { 
   fetchUserWorkouts();
   setLoggingWorkout(true);

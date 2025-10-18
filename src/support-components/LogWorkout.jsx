@@ -45,11 +45,20 @@ setExerciseElementList(newList);
   }
 }
 const handleLogWorkout = async () => {
+  const hasEmptyFields = exerciseElementList.some(exercise =>
+    exercise.sets.some(set => set.reps === "" || set.weight === "")
+  );
+
+  if (hasEmptyFields) {
+    alert("Please fill in all reps and weight fields before logging your workout.");
+    return;
+  }
   try {
     const workoutId = await addToWorkout();
     const updatedExercises = await addToExercises(workoutId); // get the updated list back
     await addToSets(updatedExercises); // pass it in
     console.log("Workout logged successfully");
+    setLoggingWorkout(false)
   } catch (err) {
     console.error("Error logging workout:", err);
   }
@@ -130,7 +139,7 @@ const changeReps = (e, exerciseIndex, setIndex) => {
     <div className={styles.modal_overlay}>
       <div className={styles.modal_content}>
         <h1>{selectedWorkout}</h1>
-        <button onClick={() => {setShowModal(false); setExerciseElementList([]); 
+        <button onClick={() => {setLoggingWorkout(false); setExerciseElementList([]); 
           setCurrPresetId(""); setCurrPresetName("");
         }}>Cancel</button>
         {exerciseElementList.map((exercise, index) => (
