@@ -22,34 +22,45 @@ export default function SignIn({ session, setSession, setUserSigningIn }) {
   window.location.hostname === "localhost"
     ? "http://localhost:5173/"
     : "https://wahidahmed04.github.io/workout-logger/";
-    const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: {
-    redirectTo 
-  } })
+    const { error } = await supabase.auth.signInWithOAuth({
+  provider: 'google',
+  options: {
+    redirectTo: window.location.origin, // works for localhost & GitHub Pages
+  },
+});
     if (error) console.error(error.message)
   }
 
-  async function signUp(email, password, username) {
-    const { data: authData, error: authError } = await supabase.auth.signUp({ email, password })
-    if (authError) {
-      console.error(authError.message)
-      return
-    }
+ async function signUp(email, password, username) {
+  const { data: authData, error: authError } = await supabase.auth.signUp({ email, password });
+  if (authError) return console.error(authError.message);
 
-    const user = authData.user
-    if (user) {
-      const { error: profileError } = await supabase
-        .from("profiles")
-        .upsert({ id: user.id, username })
-        .single()
-      if (profileError) console.error(profileError.message)
+  const user = authData.user;
 
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-      if (sessionError) console.error(sessionError)
-      else setSession(session)
-
-      setUserSigningIn(false)
-    }
+  // Wait until the user exists in auth.users
+  let retries = 5;
+  while (retries > 0) {
+    const { data: check, error: checkError } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("id", user.id);
+    if (checkError) console.error(checkError);
+    if (check && check.length > 0) break;
+    await new Promise(r => setTimeout(r, 800));
+    retries--;
   }
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .upsert({ id: user.id, username }, { onConflict: 'id' });
+  if (error) console.error(error);
+
+  setSession(authData.session);
+  setUserSigningIn(false);
+}
+
+
+  
 
   return (
     <>
