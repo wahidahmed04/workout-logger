@@ -1,0 +1,13 @@
+.navlink_container{
+    position: absolute;
+    width: 100vw;
+    bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0px;
+
+}
+.link{
+    color: blue;
+    font-size: 30px;
+}

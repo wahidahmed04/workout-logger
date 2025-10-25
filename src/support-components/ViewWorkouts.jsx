@@ -40,15 +40,25 @@ export default function ViewWorkouts({session, viewingWorkouts, setViewingWorkou
   setWorkouts(updatedArray); // update state once after loop
   console.log(updatedArray)
 };
-useEffect(() => 
-getUserWorkouts, [])
+const addToFavorites = async(name) => {
+  const {data, error} = await supabase
+  .from("favorite_exercises")
+  .insert([{user_id: session.user.id, name}])
+  if (error) console.error(error)
+}
+useEffect(() => {
+getUserWorkouts();
+}, [])
   return (
     <div>
         {workouts.map((workout, index) => (
             <div key={index}>
                 <h1>{workout.workout_name}</h1>
                 {workout.exercises.map((exercise, index) => (
-                    <h3 key={index}>{exercise}</h3>
+                  <div key={index}>
+                    <h3>{exercise}</h3>
+                    <button onClick={() => addToFavorites(exercise)}>Add To Favorites</button>
+                  </div>
                 ))}
             </div>
         ))}

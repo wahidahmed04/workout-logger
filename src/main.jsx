@@ -29,7 +29,7 @@ function Root() {
   const router = createHashRouter([
     { path: "/", element: <App session={session} setSession={setSession} userSigningIn={userSigningIn} setUserSigningIn={setUserSigningIn}/> },
     { path: "/logger", element: <WorkoutLogger session={session} /> },
-    { path: "/history", element: <WorkoutHistory session={session} /> },
+    { path: "/history", element: <WorkoutHistory /> },
     { path: "/home", element: <Home session={session} userSigningIn={userSigningIn} setUserSigningIn={setUserSigningIn}/> },
   ]);
 
