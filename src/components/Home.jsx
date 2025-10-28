@@ -99,7 +99,7 @@ useEffect(() => {
     {Array.isArray(favoriteExercises) && favoriteExercises.map((exercise, index) => (
       <h1 key={index} className={styles.stats_favorites}>{exercise.name}   </h1>
     ))}
-    {favoriteExercises.length === 0 ? <h1 className={styles.stats}>No favorite exercises yet</h1> : ""}
+    {favoriteExercises.length === 0 ? <h1 className={styles.stats_favorites}>No favorite exercises yet</h1> : ""}
     <h1 className={styles.stats_favorites_label}>Favorite exercises</h1>
     </div>
     <div className={styles.flex_container}>

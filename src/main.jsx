@@ -9,8 +9,32 @@ import Home from './components/Home.jsx';
 import { supabase } from './supabaseClient';
 
 function Root() {
+
   const [session, setSession] = useState(null);
   const [userSigningIn, setUserSigningIn] = useState(true)
+  useEffect(() => {
+  // Handle Supabase redirect fragments (GitHub Pages puts them after #)
+  const hash = window.location.hash;
+  if (hash && hash.includes('access_token')) {
+    const queryString = hash.substring(1); // remove the #
+    const params = new URLSearchParams(queryString);
+
+    const access_token = params.get('access_token');
+    const refresh_token = params.get('refresh_token');
+    const expires_in = params.get('expires_in');
+    const token_type = params.get('token_type');
+
+    // Store the session manually so the user doesn’t lose login state
+    supabase.auth.setSession({
+      access_token,
+      refresh_token,
+    }).then(() => {
+      // Clean up URL (remove tokens from hash)
+      window.location.hash = '';
+    });
+  }
+}, []);
+
   useEffect(() => {
     async function getSession() {
       const { data: { session }, error } = await supabase.auth.getSession();
