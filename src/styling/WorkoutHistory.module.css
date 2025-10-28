@@ -24,7 +24,11 @@
     display: inline-block;
     font-family: Georgia, 'Times New Roman', Times, serif;
 }
-
+.all_container{
+    background-color: rgb(34, 33, 33);
+    width: 100vw;
+    height: 100vh;
+}
 .username{
     display: inline-block;
     position: absolute;
@@ -47,4 +51,47 @@
 }
 .dash_container{
     background-color: rgb(56, 220, 56);
+}
+.header{
+    color: white;
+    text-align: center;
+    font-size: 40px;
+}
+.select{
+    text-align: center;
+    color: white;
+}
+.workout_header{
+    background-color: white;
+    cursor: pointer;
+    width: 40vw;
+    height: 5vh;
+    border-radius: 5px;
+    font-size: 20px;
+}
+.workout_containers{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.pagination_button{
+    background-color: white;
+    color: black;
+    width: 10vw;
+    font-size: 20px;
+    height: 5vh;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.pagination_controls{
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+.page_info{
+    color: white;
+
+    font-size: 20px;
+
 }
