@@ -9,6 +9,7 @@ export default function Home({session, userSigningIn, setUserSigningIn}) {
   const [accountAge, setAccountAge] = useState(null)
   const [totalWorkouts, setTotalWorkouts] = useState(0)
   const [favoriteExercises, setFavoriteExercises] = useState([])
+  const [totalSets, setTotalSets] = useState(0)
   useEffect(() => {
   if (!session?.user) return
 
@@ -46,6 +47,17 @@ useEffect(() => {
   setTotalWorkouts(getNumOfWorkouts())
 }, [session])
 useEffect(() => {
+  if (!session?.user) return
+  async function getNumOfSets() {
+  const { data, error } = await supabase
+  .rpc('get_user_set_count', { uid: session.user.id });
+  if (error) return error;
+  else return data; // data is the count
+
+  }
+  setTotalSets(getNumOfSets())
+}, [session])
+useEffect(() => {
   if (!session?.user) return;
 
   async function getFavoriteExercises() {
@@ -81,15 +93,28 @@ useEffect(() => {
     <h1 className={styles.username}>@{username}</h1>
     <button onClick={signOut} className={styles.log_out_button}>Log out</button>
     </div>
-    <h1 className={styles.stats_header}>Stats</h1>
-    <div className={styles.stats_container}>
-    <h1 className={styles.stats}>Account age: {accountAge} {accountAge === 1 ? "day" : "days"}</h1>
-    <h1 className={styles.stats}>Favorite exercises: </h1>
+    <h1 className={styles.stats_header}>Performance Overview</h1>
+    
+    <div className={styles.stats_container_favorites}>
     {Array.isArray(favoriteExercises) && favoriteExercises.map((exercise, index) => (
-      <span key={index} className={styles.exercises}>{exercise.name}   </span>
+      <h1 key={index} className={styles.stats_favorites}>{exercise.name}   </h1>
     ))}
     {favoriteExercises.length === 0 ? <h1 className={styles.stats}>No favorite exercises yet</h1> : ""}
-    <h1 className={styles.stats}>Total number of workouts: {totalWorkouts}</h1>
+    <h1 className={styles.stats_favorites_label}>Favorite exercises</h1>
+    </div>
+    <div className={styles.flex_container}>
+    <div className={styles.stats_container_default}>
+    <h1 className={styles.stats_default}>{accountAge} {accountAge === 1 ? "day" : "days"}</h1>
+    <h3 className={styles.stats_default_label}>Account age</h3>
+    </div>
+    <div className={styles.stats_container_default}>
+    <h1 className={styles.stats_default}>{totalWorkouts}</h1>
+    <h3 className={styles.stats_default_label}>Workouts</h3>
+    </div>
+    <div className={styles.stats_container_default}>
+    <h1 className={styles.stats_default}>{totalSets}</h1>
+    <h3 className={styles.stats_default_label}>Sets</h3>
+    </div>
     </div>
     <Navbar/>
     </div>
