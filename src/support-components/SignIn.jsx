@@ -25,7 +25,7 @@ export default function SignIn({ session, setSession, setUserSigningIn }) {
     const { error } = await supabase.auth.signInWithOAuth({
   provider: 'google',
   options: {
-    redirectTo: window.location.origin, // works for localhost & GitHub Pages
+    redirectTo,// works for localhost & GitHub Pages
   },
 });
     if (error) console.error(error.message)
