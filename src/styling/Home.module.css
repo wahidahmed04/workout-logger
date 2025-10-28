@@ -5,7 +5,7 @@
     font-family: Georgia, 'Times New Roman', Times, serif;
 }
 .container{
-    background-color: rgb(65, 255, 65);
+    background-color: rgb(34, 33, 33);
     width: 100vw;
     height: 100vh;
 }
@@ -21,7 +21,7 @@
     position: absolute;
     right: 50px;
     margin-top: 23px;
-    background-color: white;
+    background-color: rgb(56, 220, 56);
     border: none;
     color: blue;
     font-size: 20px;
@@ -30,27 +30,31 @@
     font-family: Georgia, 'Times New Roman', Times, serif;
 }
 .dash_container{
-    background-color: white;
+    background-color: rgb(56, 220, 56);
 }
 .stats_container{
     display: flex;
     flex-direction: column;
     width: 40vw;
     margin-left: 30vw;
-    background-color: rgb(208, 206, 206);
+    background-color: rgb(76, 76, 76);
 }
 .stats_header{
     margin-top: 5vh;
     text-align: center;
     font-family: serif;
     font-size: 40px;
+    color: white;
 }
 .stats{
     font-size: 30px;
     font-family: sans-serif;
     font-weight: 500;
+    color: rgb(56, 220, 56);
 }
 .exercises{
     font-size: 20px;
     font-weight: 500;
+    color: rgb(56, 220, 56);
+
 }

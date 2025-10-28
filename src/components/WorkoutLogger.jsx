@@ -1,11 +1,11 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import Navbar from "../support-components/Navbar"
 import { useState, useEffect } from 'react'
 import styles from '/src/styling/WorkoutLogger.module.css'
 import { supabase } from '../supabaseClient';
 import LogWorkout from "../support-components/LogWorkout";
 import ViewWorkouts from "../support-components/ViewWorkouts";
-export default function WorkoutLogger({ session }) {
+export default function WorkoutLogger({ session, userSigningIn, setUserSigningIn }) {
   const [userWorkouts, setUserWorkouts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [exercises, setExercises] = useState([{ name: "", query: "", selected: false }]);
@@ -15,6 +15,38 @@ export default function WorkoutLogger({ session }) {
   const [createError, setCreateError] = useState("")
   const [loggingWorkout, setLoggingWorkout] = useState(false)
   const [viewingWorkouts, setViewingWorkouts] = useState(false)
+  const [username, setUsername] = useState("")
+   async function signOut() {
+    const { error } = await supabase.auth.signOut()
+    if (error) console.error(error.message)
+    else setUserSigningIn(true)
+  }
+  
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (userSigningIn) {
+      navigate('/') // automatically go to home when user is signed in
+    }
+  }, [userSigningIn, navigate])
+    useEffect(() => {
+  if (!session?.user) return
+
+  async function fetchProfile() {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('username, created_at')
+      .eq('id', session.user.id)
+      .single()
+
+    if (error) console.error('Error fetching profile:', error)
+    else {
+      setUsername(data.username)
+    }
+  }
+
+  fetchProfile()
+}, [session])
   // search effect
   useEffect(() => {
     async function searchExercises() {
@@ -189,15 +221,20 @@ function handleRemove(index){
       <ViewWorkouts session={session} viewingWorkouts={viewingWorkouts} setViewingWorkouts={setViewingWorkouts}
       userWorkouts={userWorkouts} setUserWorkouts={setUserWorkouts}/>
     ) : (
-    <>
-      <h1>Workout Logger</h1>
-      <button onClick={() => {fetchUserWorkouts(); setViewingWorkouts(true)}}>Workouts</button>
-      <button onClick={() => { 
+    <div className={styles.all_container}>
+      <div className={styles.dash_container}>
+          <h1 className={styles.title}>Workout Logger</h1>
+          <h1 className={styles.username}>@{username}</h1>
+          <button onClick={signOut} className={styles.log_out_button}>Log out</button>
+          </div>
+      <div className={styles.buttons_container}>
+      <button className={styles.button} onClick={() => {fetchUserWorkouts(); setViewingWorkouts(true)}}>Workouts</button>
+      <button className={styles.button} onClick={() => { 
   fetchUserWorkouts();
   setLoggingWorkout(true);
 }}>Log a workout</button>
-      <button onClick={() => setShowModal(true)}>Create a new workout</button>
-
+      <button className={styles.button} onClick={() => setShowModal(true)}>Create a new workout</button>
+      </div>
       {showModal && (
         <div className={styles.modal_overlay}>
           <div className={styles.modal_content}>
@@ -254,7 +291,7 @@ function handleRemove(index){
         </div>
       )}
       <Navbar />
-    </>
+    </div>
     )
   );
 }

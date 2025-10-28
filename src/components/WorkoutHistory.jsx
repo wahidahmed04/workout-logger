@@ -1,9 +1,9 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Navbar from '../support-components/Navbar'
 import { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
 import styles from '/src/styling/WorkoutHistory.module.css'
-export default function WorkoutHistory() {
+export default function WorkoutHistory({userSigningIn, setUserSigningIn}) {
     const [session, setSession] = useState(null);
     const [workouts, setWorkouts] = useState([])
     const [showModal, setShowModal] = useState(false)
@@ -11,6 +11,7 @@ export default function WorkoutHistory() {
     const [exercises, setExercises] = useState([])
     const [exerciseIds, setExerciseIds] = useState({})
     const [sets, setSets] = useState({})
+    const [username, setUsername] = useState("")
     const getUserWorkouts = async () => {
   if (!session?.user?.id) return;
 
@@ -23,7 +24,11 @@ export default function WorkoutHistory() {
   if (error) console.error(error);
   else setWorkouts(data);
 };
-
+async function signOut() {
+    const { error } = await supabase.auth.signOut()
+    if (error) console.error(error.message)
+    else setUserSigningIn(true)
+  }
   
   const getUserExercises = async (workoutId) => {
       const { data: exercisesData, error } = await supabase
@@ -76,18 +81,43 @@ useEffect(() => {
     const { data: { session }, error } = await supabase.auth.getSession();
     if (error) console.error(error);
     else setSession(session);
+    
   };
   getSession();
 }, []); // only runs once
 useEffect(() => {
   if (session?.user?.id) {
+    const getUser = async () => {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('username, created_at')
+      .eq('id', session.user.id)
+      .single()
+
+    if (error) console.error('Error fetching profile:', error)
+    else {
+      setUsername(data.username)
+    }
     getUserWorkouts();
   }
+    getUser()
+  }
 }, [session]); // runs once when session is set
+const navigate = useNavigate()
 
+  useEffect(() => {
+    if (userSigningIn) {
+      navigate('/') // automatically go to home when user is signed in
+    }
+  }, [userSigningIn, navigate])
 
   return (
     <>
+     <div className={styles.dash_container}>
+        <h1 className={styles.title}>Workout Logger</h1>
+        <h1 className={styles.username}>@{username}</h1>
+        <button onClick={signOut} className={styles.log_out_button}>Log out</button>
+      </div>
     <h1>Workout History</h1>
     <h2>Select a workout to view</h2>
     {workouts.map((workout, index) => (

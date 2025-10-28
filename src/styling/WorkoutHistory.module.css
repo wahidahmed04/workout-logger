@@ -18,3 +18,33 @@
   min-width: 300px;
   max-width: 700px;
 }
+.title{
+    font-size: 50px;
+    text-align: left;
+    display: inline-block;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.username{
+    display: inline-block;
+    position: absolute;
+    right: 200px;
+    padding-top: 10px;
+    font-size: 35px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+.log_out_button{
+    position: absolute;
+    right: 50px;
+    margin-top: 23px;
+    background-color: rgb(56, 220, 56);
+    border: none;
+    color: blue;
+    font-size: 20px;
+    cursor: pointer;
+    text-decoration: underline;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+.dash_container{
+    background-color: rgb(56, 220, 56);
+}
