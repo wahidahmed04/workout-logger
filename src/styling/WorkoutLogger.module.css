@@ -12,11 +12,85 @@
 }
 
 .modal_content {
-  background: white;
+  background: rgb(56, 220, 56);
   padding: 2rem;
   border-radius: 8px;
   min-width: 300px;
   max-width: 700px;
+}
+.modal_title{
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+.modal_label{
+  font-size: 25px;
+}
+.name_input{
+  width: 300px;
+  margin-left: 5px;
+  height: 25px;
+  border: 1px solid black;
+  border-radius: 4px;
+}
+.exercise_input{
+  width: 300px;
+  margin-left: 5px;
+  height: 25px;
+  border: 1px solid black;
+  border-radius: 4px;
+}
+.remove_button{
+  margin-left: 10px;
+  background-color: red;
+  color: white;
+  border: 1px solid black;
+  border-radius: 4px;
+  height: 25px;
+  cursor: pointer;
+}
+.exercise_results{
+  background-color: rgb(255, 248, 117);
+  border: none;
+  padding: 5px;
+  margin: 2px 0;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+.add_button{
+  margin-top: 10px;
+  background-color: rgb(220, 220, 220);
+
+  border: 1px solid black;
+  border-radius: 4px;
+  height: 30px;
+  cursor: pointer;
+  width: 150px;
+  font-size: 16px;
+}
+.create_button{
+  margin-top: 15px;
+  background-color: rgb(42, 191, 255);
+  border: 1px solid black;
+  border-radius: 4px;
+  height: 30px;
+  cursor: pointer;
+  width: 180px;
+  font-size: 16px;
+}
+.cancel_button{
+  margin-top: 15px;
+  background-color: rgb(42, 191, 255);
+  border: 1px solid black;
+  border-radius: 4px;
+  height: 30px;
+  cursor: pointer;
+  width: 180px;
+  font-size: 16px;
+}
+.create_cancel_container{
+  display: flex;
+  justify-content: space-evenly;
 }
 .all_container{
     background-color: rgb(34, 33, 33);
@@ -60,6 +134,7 @@
   background-color: rgb(155, 155, 155);
 }
 .buttons_container{
+  margin-top: 2vh;
   display: flex;
   justify-content: space-evenly;
 }

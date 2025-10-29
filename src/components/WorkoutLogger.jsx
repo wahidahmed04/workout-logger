@@ -143,6 +143,12 @@ export default function WorkoutLogger({ session, userSigningIn, setUserSigningIn
     return;
   }
 
+  // require a workout name
+  if (!workoutName || workoutName.trim() === "") {
+    setCreateError("Please enter a workout name.");
+    return;
+  }
+
   setCreateError("");
   addWorkout(); // continue with your existing workout creation function
 }
@@ -238,19 +244,21 @@ function handleRemove(index){
       {showModal && (
         <div className={styles.modal_overlay}>
           <div className={styles.modal_content}>
-            <h2>Create New Workout</h2>
-            <label>Workout name:</label>
-            <input
+            <h2 className={styles.modal_title}>Create New Workout</h2>
+
+            <label className={styles.modal_label} htmlFor="workout_name">Workout name:</label>
+            <input className={styles.name_input} id="workout_name"
               placeholder="Workout name..."
               value={workoutName}
-              onChange={(e) => setWorkoutName(e.target.value)}
+              onChange={(e) => { setWorkoutName(e.target.value); if (createError) setCreateError(""); }}
             />
+
             <br /><br />
 
             {exercises.map((exercise, index) => (
               <div key={index}>
-                <label>Exercise {index + 1}:</label>
-                <input
+                <label className={styles.modal_label}>Exercise {index + 1}:</label>
+                <input className={styles.exercise_input}
                   type="text"
                   placeholder="Search exercises..."
                   value={exercise.query}
@@ -260,16 +268,15 @@ function handleRemove(index){
                     newExercises[index].selected = false; // allow new search
                     setExercises(newExercises);
                   }}
-                  style={{ width: '300px', padding: '5px' }}
                 />
-                <button onClick={() => handleRemove(index)}>Remove exercise</button>
+                <button className={styles.remove_button} onClick={() => handleRemove(index)}>Remove Exercise</button>
 
 
                 {!exercise.selected && results[index]?.length > 0 && (
                   <ul className={styles.search_results}>
                     {results[index].map((result) => (
                       <li key={result.id}>
-                        <button type="button" onClick={() => handleSelectExercise(index, result.name)}>
+                        <button className={styles.exercise_results} type="button" onClick={() => handleSelectExercise(index, result.name)}>
                           {result.name}
                         </button>
                       </li>
@@ -280,13 +287,15 @@ function handleRemove(index){
               </div>
             ))}
 
-            {addError && <p style={{ color: 'red' }}>{addError}</p>}
+            {addError && <h1 style={{ color: 'red', fontSize: "23px" }}>{addError}</h1>}
 
-            <button type="button" onClick={handleAddExercise}>Add Exercise</button>
+            <button className={styles.add_button} type="button" onClick={handleAddExercise}>Add Exercise</button>
             <br /><br />
-            <button type="button" onClick={() => {handleCreateWorkout()}}>Create Workout</button>
-            {createError && <p style={{ color: 'red' }}>{createError}</p>}
-            <button onClick={handleCancel}>Cancel</button>
+            {createError && <h1 style={{ color: 'red', fontSize: "23px" }}>{createError}</h1>}
+            <div className={styles.create_cancel_container}>
+            <button className={styles.create_button} type="button" onClick={() => {handleCreateWorkout()}}>Create Workout</button>
+            <button className={styles.cancel_button} onClick={handleCancel}>Cancel</button>
+            </div>
           </div>
         </div>
       )}
