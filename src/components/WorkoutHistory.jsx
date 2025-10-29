@@ -9,12 +9,12 @@ export default function WorkoutHistory({userSigningIn, setUserSigningIn}) {
     const [workouts, setWorkouts] = useState([])
     const [showModal, setShowModal] = useState(false)
     const [selectedWorkout, setSelectedWorkout] = useState("")
+    const [selectedWorkoutDate, setSelectedWorkoutDate] = useState("")
     const [exercises, setExercises] = useState([])
     const [exerciseIds, setExerciseIds] = useState({})
     const [sets, setSets] = useState({})
     const [username, setUsername] = useState("")
     const [currentPage, setCurrentPage] = useState(0)
-    
     const WORKOUTS_PER_PAGE = 10;
 
     const getUserWorkouts = async () => {
@@ -37,6 +37,13 @@ export default function WorkoutHistory({userSigningIn, setUserSigningIn}) {
     }
   
     const getUserExercises = async (workoutId) => {
+        const {data: exerciseDate, error: dateError} = await supabase
+          .from("workouts")
+          .select("created_at")
+          .eq("id", workoutId)
+          .single();
+        if(dateError) console.error(dateError)
+        else setSelectedWorkoutDate(datify(exerciseDate.created_at))
         const { data: exercisesData, error } = await supabase
           .from("workout_exercises")
           .select("*")
@@ -200,6 +207,32 @@ export default function WorkoutHistory({userSigningIn, setUserSigningIn}) {
         {showModal && (
           <div className={styles.modal_overlay}>
             <div className={styles.modal_content}>
+              <h1 className={styles.date}>{selectedWorkoutDate}</h1>
+              <h1 className={styles.workout_name}>{selectedWorkout.name}</h1>
+              {exercises.map((exercise, index) => {
+                const name = exercise.name
+                const tempList = sets[name]
+                return (
+                  <div className={styles.exercise_container} key={index}>
+                  <div>
+                    <h3 className={styles.exercise_name}>{name}</h3>
+                    <span className={styles.set_header}>Set</span>
+                    <span className={styles.rep_header}>Reps</span>
+                    <span className={styles.weight_header}>Weight</span>
+                    {Array.isArray(tempList) && tempList.map((obj, index) => (
+                      <div key={index}>
+                        <span className={styles.set_num}>{obj.setNumber}</span>
+                        <div className={styles.rep_weight_container}>
+                          <span className={styles.reps}>{obj.reps}</span>
+                          <span className={styles.separator}>|</span>
+                          <span className={styles.weight}>{obj.weight}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  </div>
+                )
+              })}
               <button onClick={() => {
                 setExercises([]); 
                 setSets({})
@@ -208,22 +241,6 @@ export default function WorkoutHistory({userSigningIn, setUserSigningIn}) {
               }}>
                 Go back
               </button>
-              <h1>Workout name: {selectedWorkout.name}</h1>
-              <h2>Workout exercises: </h2>
-              {exercises.map((exercise, index) => {
-                const name = exercise.name
-                const tempList = sets[name]
-                return (
-                  <div key={index}>
-                    <h3 key={index}>{name}</h3>
-                    {Array.isArray(tempList) && tempList.map((obj, index) => (
-                      <div key={index}>
-                        <ul>Set: {obj.setNumber}, Reps: {obj.reps}, Weight: {obj.weight}</ul>
-                      </div>
-                    ))}
-                  </div>
-                )
-              })}
             </div>
           </div>
         )}
