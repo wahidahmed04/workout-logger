@@ -126,14 +126,12 @@ export default function WorkoutHistory({userSigningIn, setUserSigningIn}) {
     }, [userSigningIn, navigate])
 
     const datify = (dateString) => {
-      const date = new Date(dateString);
-      const formatted = date.toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-      });
-      return formatted
-    }
+  const date = new Date(dateString);
+  const month = date.getMonth() + 1; // getMonth() returns 0-11
+  const day = date.getDate();
+  const year = date.getFullYear() % 100; // Gets last 2 digits of year
+  return `${month}/${day}/${year}`;
+}
 
     // Pagination calculations
     const totalPages = Math.ceil(workouts.length / WORKOUTS_PER_PAGE);
