@@ -176,7 +176,7 @@ const formattedDate = today.toLocaleDateString('en-US', {
       <div className={styles.modal_content}>
         <button className={styles.back_button_second} onClick={() => {setShowModal(false); setExerciseElementList([]); 
           setCurrPresetId(""); setCurrPresetName("");
-        }}>{'<'}  Back</button>
+        }}>{'<'}  Cancel</button>
         <h1 className={styles.workout_name}>{selectedWorkout}</h1>
         
         {exerciseElementList.map((exercise, index) => (

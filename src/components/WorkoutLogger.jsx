@@ -65,7 +65,7 @@ export default function WorkoutLogger({ session, userSigningIn, setUserSigningIn
           .from("exercise_catalog")
           .select("*")
           .ilike("name", `${normalizedQuery}%`)
-          .limit(5);
+          .limit(3);
 
         if (startError) {
           console.error("Supabase error:", startError);
@@ -74,18 +74,18 @@ export default function WorkoutLogger({ session, userSigningIn, setUserSigningIn
         }
 
         // Phase 2: contains query
-        if (startMatches.length < 5) {
+        if (startMatches.length < 3) {
           const { data: containsMatches, error: containsError } = await supabase
             .from("exercise_catalog")
             .select("*")
             .ilike("name", `%${normalizedQuery}%`)
-            .limit(5);
+            .limit(3);
 
           if (!containsError) {
             const combined = [...startMatches];
             for (const ex of containsMatches) {
               if (!combined.find(item => item.id === ex.id)) combined.push(ex);
-              if (combined.length === 5) break;
+              if (combined.length === 3) break;
             }
             startMatches = combined;
           }
@@ -234,7 +234,7 @@ function handleRemove(index){
           <button onClick={signOut} className={styles.log_out_button}>Log out</button>
           </div>
       <div className={styles.buttons_container}>
-      <button className={styles.button} onClick={() => {fetchUserWorkouts(); setViewingWorkouts(true)}}>Workouts</button>
+      <button className={styles.button} onClick={() => {fetchUserWorkouts(); setViewingWorkouts(true)}}>View Workout Presets</button>
       <button className={styles.button} onClick={() => { 
   fetchUserWorkouts();
   setLoggingWorkout(true);
@@ -244,23 +244,22 @@ function handleRemove(index){
       {showModal && (
         <div className={styles.modal_overlay}>
           <div className={styles.modal_content}>
+            <button className={styles.cancel_button} onClick={handleCancel}> {'<'} Cancel</button>
             <h2 className={styles.modal_title}>Create New Workout</h2>
-
+            <div className={styles.modal_form_container}>
             <label className={styles.modal_label} htmlFor="workout_name">Workout name:</label>
             <input className={styles.name_input} id="workout_name"
-              placeholder="Workout name..."
               value={workoutName}
               onChange={(e) => { setWorkoutName(e.target.value); if (createError) setCreateError(""); }}
             />
-
-            <br /><br />
+            </div>
+            <br />
 
             {exercises.map((exercise, index) => (
-              <div key={index}>
+              <div key={index} className={styles.modal_form_container}>
                 <label className={styles.modal_label}>Exercise {index + 1}:</label>
                 <input className={styles.exercise_input}
                   type="text"
-                  placeholder="Search exercises..."
                   value={exercise.query}
                   onChange={(e) => {
                     const newExercises = [...exercises];
@@ -269,19 +268,17 @@ function handleRemove(index){
                     setExercises(newExercises);
                   }}
                 />
-                <button className={styles.remove_button} onClick={() => handleRemove(index)}>Remove Exercise</button>
+                <button className={styles.remove_button} onClick={() => handleRemove(index)}>Remove</button>
 
 
                 {!exercise.selected && results[index]?.length > 0 && (
-                  <ul className={styles.search_results}>
+                <div className={styles.search_results}>
                     {results[index].map((result) => (
-                      <li key={result.id}>
                         <button className={styles.exercise_results} type="button" onClick={() => handleSelectExercise(index, result.name)}>
                           {result.name}
                         </button>
-                      </li>
                     ))}
-                  </ul>
+                  </div>
                 )}
                 <br />
               </div>
@@ -294,7 +291,7 @@ function handleRemove(index){
             {createError && <h1 style={{ color: 'red', fontSize: "23px" }}>{createError}</h1>}
             <div className={styles.create_cancel_container}>
             <button className={styles.create_button} type="button" onClick={() => {handleCreateWorkout()}}>Create Workout</button>
-            <button className={styles.cancel_button} onClick={handleCancel}>Cancel</button>
+            
             </div>
           </div>
         </div>
