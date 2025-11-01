@@ -221,7 +221,7 @@ function handleRemove(index){
   return (
     loggingWorkout ? (
       <LogWorkout session={session} loggingWorkout={loggingWorkout} setLoggingWorkout={setLoggingWorkout}
-      userWorkouts={userWorkouts} setUserWorkouts={setUserWorkouts}
+      userWorkouts={userWorkouts} setUserWorkouts={setUserWorkouts} userSigningIn={userSigningIn} setUserSigningIn={setUserSigningIn}
       />
     ) : viewingWorkouts ? (
       <ViewWorkouts session={session} viewingWorkouts={viewingWorkouts} setViewingWorkouts={setViewingWorkouts}

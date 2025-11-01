@@ -1,7 +1,8 @@
 import {useState, useEffect} from 'react'
 import { supabase } from '../supabaseClient'
 import styles from '/src/styling/LogWorkout.module.css'
-export default function LogWorkout({session, loggingWorkout, setLoggingWorkout, userWorkouts, setUserWorkouts}) {
+import Navbar from './Navbar'
+export default function LogWorkout({session, loggingWorkout, setLoggingWorkout, userWorkouts, setUserWorkouts, userSigningIn, setUserSigningIn}) {
   const [selectedId, setSelectedId] = useState('')
   const [exercises, setExercises] = useState([])
   const [showModal, setShowModal] = useState(false)
@@ -10,10 +11,33 @@ export default function LogWorkout({session, loggingWorkout, setLoggingWorkout, 
   const [exerciseElementList, setExerciseElementList] = useState([])
   const [currPresetId, setCurrPresetId] = useState("")
   const [currPresetName, setCurrPresetName] = useState("")
+  const [username, setUsername] = useState("")
+  
+  useEffect(() => {
+    const fetchUsername = async () => {
+      const { data, error } = await supabase
+
+        .from('profiles')
+        .select('username')
+        .eq('id', session.user.id)
+        .single();
+      if (error) {
+        console.error('Error fetching username:', error);
+      } else {
+        setUsername(data.username);
+      }
+    };
+    fetchUsername();
+  }, [session]);
   async function handleSelectWorkout(id) {
   setSelectedId(id);
   await fetchExercises(id);
 }
+async function signOut() {
+    const { error } = await supabase.auth.signOut()
+    if (error) console.error(error.message)
+    else setUserSigningIn(true)
+  }
   async function fetchExercises(presetId) {
   const { data, error } = await supabase
     .from('preset_exercises')
@@ -116,17 +140,29 @@ const changeReps = (e, exerciseIndex, setIndex) => {
   newList[exerciseIndex].sets[setIndex].reps = e.target.value;
   setExerciseElementList(newList);
 };
-
+const today = new Date();
+const formattedDate = today.toLocaleDateString('en-US', { 
+  month: 'long', 
+  day: 'numeric', 
+  year: 'numeric' 
+});
   return (
-    <>
-    <h1>Choose a workout</h1>
-    <div>
-    <h2>Select a workout to log</h2>
+    <div className={styles.container}>
+    <div className={styles.dash_container}>
+    <h1 className={styles.title}>Workout Logger</h1>
+    <h1 className={styles.username}>@{username}</h1>
+    <button onClick={signOut} className={styles.log_out_button}>Log out</button>
+    </div>
+    <button onClick={() => setLoggingWorkout(false)} className={styles.back_button}> {"<"} Back</button>
+    <h1 className={styles.date}>{formattedDate}</h1>
+    <h2 className={styles.select_workout_header}>Select a workout to log</h2>
+
+    <div className={styles.workout_selection_container}>
     {userWorkouts.length === 0 ? (
-      <p>No workouts yet. Create one first!</p>
+      <p className={styles.no_workout_message}>No workouts yet. Create one first!</p>
     ) : (
       userWorkouts.map(workout => (
-        <button 
+        <button className={styles.workout_button}
           key={workout.id} 
           onClick={() => {setSelectedWorkout(workout.name); handleSelectWorkout(workout.id)}}
         >
@@ -138,35 +174,61 @@ const changeReps = (e, exerciseIndex, setIndex) => {
   {showModal && (
     <div className={styles.modal_overlay}>
       <div className={styles.modal_content}>
-        <h1>{selectedWorkout}</h1>
-        <button onClick={() => {setLoggingWorkout(false); setExerciseElementList([]); 
+        <button className={styles.back_button_second} onClick={() => {setShowModal(false); setExerciseElementList([]); 
           setCurrPresetId(""); setCurrPresetName("");
-        }}>Cancel</button>
+        }}>{'<'}  Back</button>
+        <h1 className={styles.workout_name}>{selectedWorkout}</h1>
+        
         {exerciseElementList.map((exercise, index) => (
-  <div key={index}>
-    <h2>{exercise.name}</h2>
+  <div key={index} className={styles.exercise_container}>
+    <h2 className={styles.exercise_name}>{exercise.name}</h2>
+    <span className={styles.set_header}>Set</span>
+    <span className={styles.rep_header}>Reps</span>
+    <span className={styles.weight_header}>Weight</span>
     {exercise.sets.map((set, setIndex) => (
       <div key={setIndex}>
-        <input
+        <span className={styles.set_num}>{setIndex+1}</span>
+        <div className={styles.input_spacer}>
+        <input className={styles.rep_input}
           type="number"
-          placeholder="Reps"
+          maxLength={4}
           value={set.reps}
-          onChange={e => {changeReps(e, index, setIndex); console.log(exerciseElementList);}}
+          onChange={e => {
+            if (e.target.value.length <= 4) {
+            changeReps(e, index, setIndex);
+            }
+          }}
         />
-        <input
+        <span className={styles.separator}>|</span>
+        <input className={styles.weight_input}
           type="number"
-          placeholder="Weight"
+          maxLength={4}
           value={set.weight}
           onChange={e => {
+            if (e.target.value.length <= 4) {
             const newList = [...exerciseElementList];
             newList[index].sets[setIndex].weight = e.target.value;
             setExerciseElementList(newList);
-            console.log(exerciseElementList)
+            }
           }}
         />
+        </div>
       </div>
     ))}
     <button
+  onClick={() => {
+    const newList = [...exerciseElementList];
+    if (newList[index].sets.length > 1) {
+      newList[index].sets.pop();
+      setExerciseElementList(newList);
+    }
+  }}
+  disabled={exercise.sets.length <= 1}
+  className={styles.remove_set_button}
+>
+  Remove Set
+</button>
+    <button className={styles.add_set_button}
       onClick={() => {
         const newList = [...exerciseElementList];
         const nextSetNumber = newList[index].sets.length + 1;
@@ -179,10 +241,11 @@ const changeReps = (e, exerciseIndex, setIndex) => {
   </div>
 ))}
 
-<button onClick={handleLogWorkout}>Add workout</button>
+<button onClick={handleLogWorkout} className={styles.add_workout_button}>Add workout</button>
       </div>
     </div>
   )}
-    </>
+  <Navbar/>
+    </div>
   )
 }

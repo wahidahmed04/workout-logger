@@ -207,6 +207,14 @@ export default function WorkoutHistory({userSigningIn, setUserSigningIn}) {
         {showModal && (
           <div className={styles.modal_overlay}>
             <div className={styles.modal_content}>
+              <button className={styles.back_button} onClick={() => {
+                setExercises([]); 
+                setSets({})
+                setSelectedWorkout(""); 
+                setShowModal(false);
+              }}>
+                {'<'}  Back
+              </button>
               <h1 className={styles.date}>{selectedWorkoutDate}</h1>
               <h1 className={styles.workout_name}>{selectedWorkout.name}</h1>
               {exercises.map((exercise, index) => {
@@ -233,14 +241,7 @@ export default function WorkoutHistory({userSigningIn, setUserSigningIn}) {
                   </div>
                 )
               })}
-              <button onClick={() => {
-                setExercises([]); 
-                setSets({})
-                setSelectedWorkout(""); 
-                setShowModal(false);
-              }}>
-                Go back
-              </button>
+              
             </div>
           </div>
         )}

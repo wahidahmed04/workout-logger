@@ -164,3 +164,15 @@
     top: 2px;
     font-size: 25px;
 }
+.back_button{
+    position: relative;
+    right: 30px;
+    bottom: 30px;
+    margin-bottom: 15px;
+    background-color: rgb(34, 33, 33);
+    color: rgb(56, 220, 56);
+    font-size: 25px;
+    cursor: pointer;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    border: none;
+}
