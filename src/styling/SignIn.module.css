@@ -5,47 +5,53 @@
     align-items: center;
     background-color: white;
     margin: 0px 500px;
-    height: 500px;
+    height: 510px;
+
     border-radius: 8px;
 }
 .sign_up_container{
     display: flex;
-    flex-flow: column wrap;
+    flex-flow: column nowrap;
     justify-content: flex-start;
     align-items: center;
     background-color: white;
     margin: 0px 500px;
-    height: 400px;
+    height: 450px;
     border-radius: 8px;
 }
 .login{
     margin-top: 30px;
     font-size: 40px;
     margin-bottom: 10px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
 }
 .input{
 width: 400px;
 margin-bottom: 20px;
+height: 30px;
 
 }
 .email_label{
     position: relative;
-    right: 37%;
+    right: 36%;
+    font-family: Georgia, 'Times New Roman', Times, serif;
 }
 .password_label{
     position: relative;
-    right: 34%;
+    right: 32%;
+    font-family: Georgia, 'Times New Roman', Times, serif;
 }
-.login_button{
+.login_button, .login_button_second{
     width: 400px;
     border-radius: 30px;
     height: 50px;
-    background-color: rgb(116, 153, 255);
+    background-color: rgb(65, 114, 251);
     cursor: pointer;
     color: white;
     font-size: 20px;
     margin-bottom: 20px;
     margin-top: 20px;
+    font-family: Arial, Helvetica, sans-serif;
 }
 .google_button{
     margin-top: 20px;
@@ -53,25 +59,28 @@ margin-bottom: 20px;
     border-radius: 30px;
     height: 50px;
     cursor: pointer;
-
     font-size: 20px;
     margin-bottom: 50px;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: white;
+    
 }
 .google_img{
     height: 40px;
     position:relative;
     top: 3px;
-    right: 20%;
+    right: 25px;
 }
 .google_text{
     position: relative;
     bottom: 10px;
-    right: 60px;
+    right: 20px;
 }
 .create{
     position: relative;
-    right: 15%;
-    font-size: 18px;
+    right: 20px;
+    font-size: 22px;
+    font-weight: 700;
 }
 .create_button{
     font-family: 'Times New Roman', Times, serif;
@@ -79,9 +88,36 @@ margin-bottom: 20px;
     background-color: white;
     cursor: pointer;
     position: relative;
-    left: 5%;
-    font-size: 18px;
+    left: 15px;
+    font-size: 22px;
     color: rgb(0, 68, 255);;
     font-weight: 700;
     text-decoration: underline;
+}
+.cancel_button{
+    position: relative;
+    right: 170px;
+    top: 20px;
+    background: transparent;
+    color: #111827; /* dark gray */
+    border: 1px solid rgba(0,0,0,0.08);
+    padding: 8px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 600;
+    transition: background-color 140ms ease, transform 100ms ease, box-shadow 120ms ease;
+}
+
+.cancel_button:hover{
+    background-color: #f3f4f6; /* subtle hover */
+}
+
+.cancel_button:active{
+    transform: translateY(1px);
+}
+
+.cancel_button:focus{
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(59,130,246,0.12); /* accessible focus ring */
 }

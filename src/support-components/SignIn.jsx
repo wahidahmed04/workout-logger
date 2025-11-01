@@ -78,6 +78,7 @@ export default function SignIn({ session, setSession, setUserSigningIn }) {
             <img className={styles.google_img} src={googleLogo} alt="google image"/>
             <span className={styles.google_text}>Continue with Google</span>
             </button>
+          
           <span className={styles.create}>Don't have an account? 
             <button className={styles.create_button}onClick={() => setSigningIn(false)}>Sign Up</button>
           </span>
@@ -85,6 +86,7 @@ export default function SignIn({ session, setSession, setUserSigningIn }) {
         </div>
       ) : (
         <div className={styles.sign_up_container}>
+          <button className={styles.cancel_button} onClick={() => setSigningIn(true)}>Cancel</button>
           <h1 className={styles.login}>Sign Up</h1>
           <h3 className={styles.email_label}>Email</h3>
           <input className={styles.input} value={email} onChange={e => setEmail(e.target.value)} placeholder='Email adress...' />
