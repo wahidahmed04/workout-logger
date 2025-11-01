@@ -10,6 +10,7 @@ export default function Home({session, userSigningIn, setUserSigningIn}) {
   const [totalWorkouts, setTotalWorkouts] = useState(0)
   const [favoriteExercises, setFavoriteExercises] = useState([])
   const [totalSets, setTotalSets] = useState(0)
+  const [height, setHeight] = useState(70);
   useEffect(() => {
   if (!session?.user) return
 
@@ -67,7 +68,13 @@ useEffect(() => {
       .eq("user_id", session.user.id);
 
     if (error) console.error('Error fetching favorites:', error);
-    else setFavoriteExercises(data); // set the actual array, not a promise
+    else {
+      setFavoriteExercises(data); // set the actual array, not a promise
+      setHeight(70+data.length*30);
+      if(data.length===0){
+        setHeight(100)
+      }
+    }
   }
 
   getFavoriteExercises(); // call the async function
@@ -95,7 +102,7 @@ useEffect(() => {
     </div>
     <h1 className={styles.stats_header}>Performance Overview</h1>
     
-    <div className={styles.stats_container_favorites}>
+    <div className={styles.stats_container_favorites} style={{ '--dynamic-height': `${height}px` }}>
     {Array.isArray(favoriteExercises) && favoriteExercises.map((exercise, index) => (
       <h1 key={index} className={styles.stats_favorites}>{exercise.name}   </h1>
     ))}

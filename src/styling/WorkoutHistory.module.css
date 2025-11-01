@@ -40,11 +40,11 @@
 .log_out_button{
     position: absolute;
     right: 50px;
-    margin-top: 23px;
+    margin-top: 18px;
     background-color: rgb(56, 220, 56);
     border: none;
     color: blue;
-    font-size: 20px;
+    font-size: 25px;
     cursor: pointer;
     text-decoration: underline;
     font-family: Georgia, 'Times New Roman', Times, serif;

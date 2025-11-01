@@ -20,11 +20,11 @@
 .log_out_button{
     position: absolute;
     right: 50px;
-    margin-top: 23px;
+    margin-top: 18px;
     background-color: rgb(56, 220, 56);
     border: none;
     color: blue;
-    font-size: 20px;
+    font-size: 25px;
     cursor: pointer;
     text-decoration: underline;
     font-family: Georgia, 'Times New Roman', Times, serif;
@@ -45,6 +45,7 @@
     font-family: serif;
     font-size: 50px;
     color: white;
+    margin-bottom: 3vh;
 }
 .stats{
     font-size: 30px;
@@ -79,23 +80,25 @@ color:rgb(171, 171, 171);
 text-align: center;
 }
 .stats_container_favorites{
+    display: flex;
+  flex-direction: column;
     color: white;
     width: 60vw;
     border: 3px solid;
     border-color: rgb(75, 75, 75);
     border-radius: 3px;
-    height: 25vh;
+    height: var(--dynamic-height);
     margin-left: 20vw;
 }
 .stats_favorites_label{
     font-size: 25px;
 color:rgb(171, 171, 171);
 text-align: center;
-margin-top: 3vh;
+margin-top: auto; /* This pushes it to the bottom */
+
 }
 .stats_favorites{
-    font-size: 35px;
-
+    font-size: 30px;
 }
 .flex_container{
     margin-left: 20vw;
